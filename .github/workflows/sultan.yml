@@ -186,9 +186,6 @@ jobs:
           echo "CONFIG_TCP_CONG_WESTWOOD=n" >> ./arch/arm64/configs/${{ inputs.codename }}_defconfig
           echo "CONFIG_TCP_CONG_HTCP=n" >> ./arch/arm64/configs/${{ inputs.codename }}_defconfig
 
-          # Add O2 optimization
-          echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> ./arch/arm64/configs/${{ inputs.codename }}_defconfig
-
       - name: Run sed and perl Commands
         run: |
           echo "Changing to configuration directory: $CONFIG..."
@@ -203,9 +200,9 @@ jobs:
           cd "$CONFIG"
           
           echo "Building the kernel..."
-#          if [ "${{ inputs.codename }}" == "zumapro" ]; then
-#            export KCFLAGS="-march=armv8.6-a -O3 --param=min-pagesize=0"
-#          fi
+          if [ "${{ inputs.codename }}" == "zumapro" ]; then
+            export KCFLAGS="-march=armv8.6-a -O3 --param=min-pagesize=0"
+          fi
           make ${{ inputs.codename }}_defconfig -j$(nproc --all)
           make -j$(nproc --all)
 
@@ -219,10 +216,10 @@ jobs:
           if [ "${{ inputs.codename }}" == "gs201" ]; then
             cat ./out/google-devices/gs201/dts/*.dtb > ../AnyKernel3/dtb
             #cp ./out/google-devices/gs201/dts/dtbo.img ../AnyKernel3/dtbo.img
-#          elif [ "${{ inputs.codename }}" == "zuma" ]; then
-#            cat ./out/google-devices/zuma/dts/*.dtb > ../AnyKernel3/dtb
-#          elif [ "${{ inputs.codename }}" == "zumapro" ]; then
-#            cat ./out/google-devices/zumapro/dts/*.dtb > ../AnyKernel3/dtb
+          elif [ "${{ inputs.codename }}" == "zuma" ]; then
+            cat ./out/google-devices/zuma/dts/*.dtb > ../AnyKernel3/dtb
+          elif [ "${{ inputs.codename }}" == "zumapro" ]; then
+            cat ./out/google-devices/zumapro/dts/*.dtb > ../AnyKernel3/dtb
           fi
 
       - name: Create ZIP Files for Different Formats
