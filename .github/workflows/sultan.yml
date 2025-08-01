@@ -200,6 +200,9 @@ jobs:
           cd "$CONFIG"
           
           echo "Building the kernel..."
+          if [ "${{ inputs.codename }}" == "gs201" ]; then
+            export KCFLAGS="-march=armv8.2-a -O2 --param=min-pagesize=0"
+          fi
           if [ "${{ inputs.codename }}" == "zumapro" ]; then
             export KCFLAGS="-march=armv8.6-a -O3 --param=min-pagesize=0"
           fi
